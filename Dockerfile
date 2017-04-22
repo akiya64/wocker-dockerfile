@@ -80,6 +80,14 @@ RUN sed -i -e "s/^bind-address.*/bind-address = 0.0.0.0/" /etc/mysql/my.cnf \
 RUN chown -R wocker:wocker /var/www/wordpress
 
 #
+# Set site icon
+#
+ADD wocker-site-icon.png  /var/www
+RUN service mysql start \
+    && wp media import /var/www/wocker-site-icon.png --porcelain --allow-root \
+    | xargs -n 1 -I{} wp option update site_icon {} --allow-root \
+    && rm /var/www/wocker-site-icon.png
+#
 # Open ports
 #
 EXPOSE 80 3306
